@@ -1,5 +1,7 @@
 package fit.termination.services;
 
+import java.time.temporal.ChronoUnit;
+
 import fit.termination.domain.Employee;
 
 public class TerminationCalculator {
@@ -30,6 +32,10 @@ public class TerminationCalculator {
     public double getSalaryBalance() {
         var dailySalary = employee.getTotalSalary() / 30;
         return dailySalary * lastLaborDaysCount;
+    }
+
+    public int getOverdueVacationsMonthsCount() {
+        return Long.valueOf(ChronoUnit.MONTHS.between(employee.getInitialDate(), employee.getLastDate())).intValue();
     }
 
 }
