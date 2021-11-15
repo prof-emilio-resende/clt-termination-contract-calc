@@ -6,17 +6,27 @@ public class Employee {
     private double totalSalary;
     private LocalDate initialDate;
     private LocalDate lastDate;
+    private int vacationsPeriodsTaken;
 
     public Employee(double totalSalary) {
-        this.totalSalary = totalSalary;
+        this.setTotalSalary(totalSalary);
     }
     
-    public Employee(double totalSalary, LocalDate initialDate, LocalDate lastDate) {
-        this.totalSalary = totalSalary;
-        this.initialDate = initialDate;
-        this.lastDate = lastDate;
+    public Employee(double totalSalary, LocalDate initialDate, LocalDate lastDate, int vacationsPeriodsTaken) {
+        this.setTotalSalary(totalSalary);
+        this.setInitialDate(initialDate);
+        this.setLastDate(lastDate);
+        this.setVacationsPeriodsTaken(vacationsPeriodsTaken);
     }
 
+    public int getVacationsPeriodsTaken() {
+        return vacationsPeriodsTaken;
+    }
+
+    public void setVacationsPeriodsTaken(int vacationsPeriodsTaken) {
+        this.vacationsPeriodsTaken = vacationsPeriodsTaken;
+    }
+    
     public LocalDate getInitialDate() {
         return initialDate;
     }

@@ -24,8 +24,8 @@ public class AppTest
     @Test
     public void shouldCalculateSalaryBalance() {
         // arrange (given)
-        var employee = new Employee(1200.00);
-        var calculator = new TerminationCalculator(employee, 10);
+        var employee = new Employee(1200.00, LocalDate.of(2018, 9, 11), LocalDate.of(2019,9,10), 1);
+        var calculator = new TerminationCalculator(employee);
         var expectedBalance = 400.00;
 
         // act (when)
@@ -44,8 +44,8 @@ public class AppTest
     @Test
     public void shouldCalculateOverdueVacationsMonthsCount() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11));
-        var calculator = new TerminationCalculator(employee, 11);
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11), 0);
+        var calculator = new TerminationCalculator(employee);
         var expected = 12;
 
         // act
@@ -64,9 +64,53 @@ public class AppTest
     @Test
     public void shouldCalculateOverdueVacationsValue() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11));
-        var calculator = new TerminationCalculator(employee, 11);
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11), 0);
+        var calculator = new TerminationCalculator(employee);
         var expected = 1600.00;
+
+        // act
+        var overdueVacationsValue = calculator.getOverdueVacationsValue();
+
+        // assert
+        assertEquals(expected, overdueVacationsValue, 0.01);
+    }
+
+    /**
+     * Validate the calculation for overdue vacations, respecting the business rule:
+     * Given an termination contract of the employee X
+     * When his initial date was 11/09/2018(dd/MM/yyyy) 
+     *  and his last working day was 11/04/2020(dd/MM/yyyy)
+     *  and he took 1 (one) vacation period already
+     * Then the expected overdue vacations months count is 7
+     */
+    @Test
+    public void shouldCalculatePartialOverdueVacationsMonthsCount() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2020, 4, 11), 1);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 7;
+
+        // act
+        var overdueVacationsMonthsCount = calculator.getOverdueVacationsMonthsCount();
+
+        // assert
+        assertEquals(expected, overdueVacationsMonthsCount);
+    }
+
+    /**
+     * Validate the calculation for overdue vacations, respecting the business rule:
+     * Given an termination contract of the employee X
+     * When his initial date was 11/09/2018(dd/MM/yyyy) 
+     *  and his last working day was 11/04/2020(dd/MM/yyyy)
+     *  and he took 1 (one) vacation period already
+     * Then the expected overdue vacations value is R$700.00
+     */
+    @Test
+    public void shouldCalculatePartialOverdueVacationsValue() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2020, 4, 11), 1);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 933.33;
 
         // act
         var overdueVacationsValue = calculator.getOverdueVacationsValue();
