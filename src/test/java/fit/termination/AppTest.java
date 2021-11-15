@@ -64,7 +64,14 @@ public class AppTest
     @Test
     public void shouldCalculateOverdueVacationsValue() {
         // arrange
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11));
+        var calculator = new TerminationCalculator(employee, 11);
+        var expected = 1600.00;
+
         // act
+        var overdueVacationsValue = calculator.getOverdueVacationsValue();
+
         // assert
+        assertEquals(expected, overdueVacationsValue, 0.01);
     }
 }

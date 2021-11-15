@@ -38,4 +38,10 @@ public class TerminationCalculator {
         return Long.valueOf(ChronoUnit.MONTHS.between(employee.getInitialDate(), employee.getLastDate())).intValue();
     }
 
+    public double getOverdueVacationsValue() {
+        var salaryToCalc = (employee.getTotalSalary()/12) * getOverdueVacationsMonthsCount();
+        
+        return salaryToCalc + (salaryToCalc/3);
+    }
+
 }
