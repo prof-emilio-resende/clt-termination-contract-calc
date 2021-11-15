@@ -3,7 +3,6 @@ package fit.termination;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import org.junit.Test;
 
@@ -99,11 +98,13 @@ public class AppTest
 
     /**
      * Validate the calculation for overdue vacations, respecting the business rule:
-     * Given an termination contract of the employee X
+     * Given an termination contract of the employee X with R$1200.00 of monthly salary
      * When his initial date was 11/09/2018(dd/MM/yyyy) 
      *  and his last working day was 11/04/2020(dd/MM/yyyy)
      *  and he took 1 (one) vacation period already
-     * Then the expected overdue vacations value is R$700.00
+     * Then the expected overdue vacations value is R$933.33..., according to the formula:
+     * ((salary/12) * OverdueVacationPeriod) * (1 + 1/3)
+     * e.g. ((1200.00/12) * 7) * (1 + 1/3)
      */
     @Test
     public void shouldCalculatePartialOverdueVacationsValue() {
