@@ -30,7 +30,7 @@ public class TerminationCalculator {
     }
 
     public int getOverdueVacationsMonthsCount() {
-        var monthsTaken = this.employee.getVacationsPeriodsTaken() * 12;
+        var monthsTaken = employee.getVacationsPeriodsTaken() * 12;
         var totalMonths = Long.valueOf(ChronoUnit.MONTHS.between(employee.getInitialDate(), employee.getLastDate())).intValue();
         var months = totalMonths - monthsTaken;
         return months > 0 ? months : 0;
@@ -43,11 +43,12 @@ public class TerminationCalculator {
     }
 
     public int getOverdueThirteenthMonthsCount() {
+        var monthsOutOfScope = employee.getThirteenthSalaryPaidCount() * 12;
         var totalMonths = Long.valueOf(ChronoUnit.MONTHS.between(employee.getInitialDate(), employee.getLastDate())).intValue();
         var daysOnLastMonth = Period.between(employee.getInitialDate(), employee.getLastDate()).getDays();
         if (daysOnLastMonth > 14) totalMonths++;
 
-        return totalMonths;
+        return totalMonths - monthsOutOfScope;
     }
 
     public double getOverdueThirteenthValue() {
@@ -58,5 +59,21 @@ public class TerminationCalculator {
     public int getContractTerminationNoticeDays() {
         var totalYears = Period.between(employee.getInitialDate(), employee.getLastDate());
         return 30 + (3 * totalYears.getYears());
+    }
+
+    public double getContractTerminationFGTSPenalty() {
+        var monthtlyFGTS = employee.getTotalSalary() * 0.08;
+        var totalMonths = Long.valueOf(ChronoUnit.MONTHS.between(employee.getInitialDate(), employee.getLastDate())).intValue();
+        var totalFGTS = totalMonths * monthtlyFGTS;
+        return totalFGTS * 0.4;
+    }
+
+    public double getContractTerminationValue() {
+        var salaryBalance = this.getSalaryBalance();
+        var vacations = this.getOverdueVacationsValue();
+        var thirteenth = this.getOverdueThirteenthValue();
+        var fgts = this.getContractTerminationFGTSPenalty();
+
+        return salaryBalance + vacations + thirteenth + fgts;
     }
 }

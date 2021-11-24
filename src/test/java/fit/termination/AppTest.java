@@ -10,7 +10,7 @@ import fit.termination.domain.Employee;
 import fit.termination.services.TerminationCalculator;
 
 /**
- * Unit test for simple App.
+ * Unit test for contract termination App.
  */
 public class AppTest 
 {
@@ -23,7 +23,7 @@ public class AppTest
     @Test
     public void shouldCalculateSalaryBalance() {
         // arrange (given)
-        var employee = new Employee(1200.00, LocalDate.of(2018, 9, 11), LocalDate.of(2019,9,10), 1);
+        var employee = new Employee(1200.00, LocalDate.of(2018, 9, 11), LocalDate.of(2019,9,10), 1, 0);
         var calculator = new TerminationCalculator(employee);
         var expectedBalance = 400.00;
 
@@ -43,7 +43,7 @@ public class AppTest
     @Test
     public void shouldCalculateOverdueVacationsMonthsCount() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11), 0);
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11), 0, 0);
         var calculator = new TerminationCalculator(employee);
         var expected = 12;
 
@@ -63,7 +63,7 @@ public class AppTest
     @Test
     public void shouldCalculateOverdueVacationsValue() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11), 0);
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2019, 9, 11), 0, 0);
         var calculator = new TerminationCalculator(employee);
         var expected = 1600.00;
 
@@ -85,7 +85,7 @@ public class AppTest
     @Test
     public void shouldCalculatePartialOverdueVacationsMonthsCount() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2020, 4, 11), 1);
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2020, 4, 11), 1, 1);
         var calculator = new TerminationCalculator(employee);
         var expected = 7;
 
@@ -109,7 +109,7 @@ public class AppTest
     @Test
     public void shouldCalculatePartialOverdueVacationsValue() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2020, 4, 11), 1);
+        var employee = new Employee(1200, LocalDate.of(2018, 9, 11), LocalDate.of(2020, 4, 11), 1, 1);
         var calculator = new TerminationCalculator(employee);
         var expected = 933.33;
 
@@ -131,7 +131,7 @@ public class AppTest
     @Test
     public void shouldCalculatePartialThirteenthSalaryMonthsCount() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 4, 10), 0);
+        var employee = new Employee(1200, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 4, 10), 0, 0);
         var calculator = new TerminationCalculator(employee);
         var expected = 3;
 
@@ -153,7 +153,7 @@ public class AppTest
     @Test
     public void shouldCalculatePartialThirteenthSalaryValue() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 4, 10), 0);
+        var employee = new Employee(1200, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 4, 10), 0, 0);
         var calculator = new TerminationCalculator(employee);
         var expected = 300;
 
@@ -174,7 +174,7 @@ public class AppTest
     @Test
     public void shouldCalculateContractTerminationNoticeDays() {
         // arrange
-        var employee = new Employee(1200, LocalDate.of(2019, 9, 11), LocalDate.of(2021, 4, 10), 0);
+        var employee = new Employee(1200, LocalDate.of(2019, 9, 11), LocalDate.of(2021, 4, 10), 0, 1);
         var calculator = new TerminationCalculator(employee);
         var expected = 33;
 
@@ -183,5 +183,47 @@ public class AppTest
 
         // assert
         assertEquals(expected, noticeDays, 0.01);
+    }
+
+    /** 
+     * Validate the contract termination penalty over the tax FGTS, based on the calculation: total FGTS paid * 40%
+     * Given the termination contract of the employee X, with R$1200.00 of monthly salary
+     * When his initial date was 01/01/2020 (dd/MM/yyyy)
+     *   and his last working day was 01/08/2021 (dd/MM/yyyy)
+     * Then the expected penalty is R$729.60
+     */
+    @Test
+    public void shouldCalculateFGTSPenalty() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2020, 1, 1), LocalDate.of(2021, 8, 1), 0, 1);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 729.60;
+
+        // act
+        var fgtsPenalty = calculator.getContractTerminationFGTSPenalty();
+
+        // assert
+        assertEquals(expected, fgtsPenalty, 0.01);
+    }
+
+    /**
+     * Validate the contract termination total value calculation, which is a composition of all the previous rules
+     * Given the termination contract of the employee X, with R$1200.00 of monthly salary
+     * When his initial date was 01/01/2020 (dd/MM/yyyy)
+     *  and his last working day was 01/08/2021 (dd/MM/yyyy)
+     * Then the expected penalty is R$
+     */
+    @Test
+    public void shouldCalculateTotalTerminationValue() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2020, 1, 1), LocalDate.of(2021, 8, 1), 0, 1);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 4002.93;
+
+        // act
+        var totalTerminantionValue = calculator.getContractTerminationValue();
+
+        // assert
+        assertEquals(expected, totalTerminantionValue, 0.01);
     }
 }
