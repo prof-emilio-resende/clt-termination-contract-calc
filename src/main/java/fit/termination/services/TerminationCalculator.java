@@ -1,5 +1,6 @@
 package fit.termination.services;
 
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import fit.termination.domain.Employee;
@@ -41,4 +42,21 @@ public class TerminationCalculator {
         return salaryToCalc + (salaryToCalc/3);
     }
 
+    public int getOverdueThirteenthMonthsCount() {
+        var totalMonths = Long.valueOf(ChronoUnit.MONTHS.between(employee.getInitialDate(), employee.getLastDate())).intValue();
+        var daysOnLastMonth = Period.between(employee.getInitialDate(), employee.getLastDate()).getDays();
+        if (daysOnLastMonth > 14) totalMonths++;
+
+        return totalMonths;
+    }
+
+    public double getOverdueThirteenthValue() {
+        var thirteenthSalaryTerm = employee.getTotalSalary() / 12;
+        return thirteenthSalaryTerm * getOverdueThirteenthMonthsCount();
+    }
+
+    public int getContractTerminationNoticeDays() {
+        var totalYears = Period.between(employee.getInitialDate(), employee.getLastDate());
+        return 30 + (3 * totalYears.getYears());
+    }
 }

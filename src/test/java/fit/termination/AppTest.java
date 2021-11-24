@@ -119,4 +119,69 @@ public class AppTest
         // assert
         assertEquals(expected, overdueVacationsValue, 0.01);
     }
+
+    /**
+     * Validate the calculations for applicable thirteenth salary, according to the following rules:
+     * Given an termination contract of the employee X, with R$1200.00 of monthly salary
+     * When his initial date was 01/01/2021(dd/MM/yyyy)
+     *  and his last working day was 10/04/2021 (dd/MM/yyyy)
+     *      considering that every month only counts with minimum of 14 working days
+     * Then the expected thirteenth salary mounts count are 3
+     */
+    @Test
+    public void shouldCalculatePartialThirteenthSalaryMonthsCount() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 4, 10), 0);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 3;
+
+        // act
+        var partialThirteenthSalaryMonthsCount = calculator.getOverdueThirteenthMonthsCount();
+
+        // assert
+        assertEquals(expected, partialThirteenthSalaryMonthsCount);
+    }
+
+    /**
+     * Validate the calculations for applicable thirteenth salary, according to the following rules:
+     * Given an termination contract of the employee X, with R$1200.00 of monthly salary
+     * When his initial date was 01/01/2021(dd/MM/yyyy)
+     *  and his last working day was 10/04/2021 (dd/MM/yyyy)
+     *      considering that every month only counts with minimum of 14 working days
+     * Then the expected thirteenth salary value is R$300.00
+     */
+    @Test
+    public void shouldCalculatePartialThirteenthSalaryValue() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 4, 10), 0);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 300;
+
+        // act
+        var partialThirteenthSalaryValue = calculator.getOverdueThirteenthValue();
+
+        // assert
+        assertEquals(expected, partialThirteenthSalaryValue, 0.01);
+    }
+
+    /**
+     * Validate the contract termination required notice in days, based on the calculation: 30 + (number of labor years * 3)
+     * Given the termination contract of the employee X
+     * When his initial date was 11/09/2019 (dd/MM/yyyy)
+     *  and his last working day was 10/04/2021 (dd/MM/yyyy)
+     * Then the expected notice time in days is 33
+     */
+    @Test
+    public void shouldCalculateContractTerminationNoticeDays() {
+        // arrange
+        var employee = new Employee(1200, LocalDate.of(2019, 9, 11), LocalDate.of(2021, 4, 10), 0);
+        var calculator = new TerminationCalculator(employee);
+        var expected = 33;
+
+        // act
+        var noticeDays = calculator.getContractTerminationNoticeDays();
+
+        // assert
+        assertEquals(expected, noticeDays, 0.01);
+    }
 }
